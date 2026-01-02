@@ -1,13 +1,32 @@
 package com.example.demo.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.demo.dto.HealthLogRequest;
+import com.example.demo.dto.HealthLogResponse;
+import com.example.demo.service.HealthService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/health")
 public class HealthController {
 
-    @GetMapping("/health")
-    public String health() {
-        return "OK";
+    private final HealthService healthService;
+
+    @GetMapping("/logs")
+    public List<HealthLogResponse> getLogs() {
+        return healthService.getAllLogs();
+    }
+
+    @GetMapping("/logs/latest")
+    public HealthLogResponse getLatestLog() {
+        return healthService.getLatestLog();
+    }
+
+    @PostMapping("/log")
+    public HealthLogResponse saveLog(@RequestBody HealthLogRequest request) {
+        return healthService.saveLog(request.getStatus(), request.getMessage());
     }
 }
